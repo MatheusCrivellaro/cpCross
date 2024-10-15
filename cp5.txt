@@ -1,0 +1,170 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    const appTitle = 'Fomulario CheckPoint 5';
+
+    return MaterialApp(
+      title: appTitle,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text(appTitle),
+        ),
+        body: const MyCustomForm(),
+      ),
+    );
+  }
+}
+
+class MyCustomForm extends StatefulWidget {
+  const MyCustomForm({Key? key}) : super(key: key);
+
+  @override
+  MyCustomFormState createState() {
+    return MyCustomFormState();
+  }
+}
+
+class MyCustomFormState extends State<MyCustomForm> {
+  final emailController = TextEditingController();
+  final senhaController = TextEditingController();
+  final senhaConfirmController = TextEditingController();
+  final nomeController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var validado = 0;
+
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: const EdgeInsets.all(32),
+        children: <Widget>[
+          buildNome(),
+          const SizedBox(
+            height: 24,
+          ),
+          buildEmail(),
+          const SizedBox(
+            height: 24,
+          ),
+          buildPassword(),
+          const SizedBox(
+            height: 24,
+          ),
+          buildPasswordConfirm(),
+          const SizedBox(
+            height: 24,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                print('Name: ${senhaController.text}');
+                print('Email: ${emailController.text}');
+                print('Password: ${senhaController.text}');
+                print('Password Confirm: ${senhaController.text}');
+                setState(() {
+                  validado = 1;
+                });
+              }
+            },
+            child: const Text('Cadastrar'),
+          ),
+          Text(
+            validado == 1 ? "" : "",
+            style: TextStyle(color: Colors.green),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildEmail() => TextFormField(
+        controller: emailController,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'O campo email é obrigatório';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          hintText: 'name@example.com',
+          labelText: 'Email',
+          border: const OutlineInputBorder(),
+          prefixIcon: const Icon(Icons.email),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              emailController.clear();
+            },
+          ),
+        ),
+        keyboardType: TextInputType.emailAddress,
+      );
+
+  Widget buildPassword() => TextFormField(
+        controller: senhaController,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'O campo senha é obrigatório';
+          }
+          if (value.length < 6) {
+            return 'A senha deve ter no mínimo 6 caracteres';
+          }
+          return null;
+        },
+        obscureText: true,
+        decoration: const InputDecoration(
+          hintText: 'Seua senha',
+          labelText: 'Senha',
+          border: OutlineInputBorder(),
+        ),
+      );
+
+  Widget buildPasswordConfirm() => TextFormField(
+        controller: senhaConfirmController,
+        validator: (value) {
+          if (senhaController.text != value) {
+            return 'As senhas devem ser iguais';
+          }
+          return null;
+        },
+        obscureText: true,
+        decoration: const InputDecoration(
+          hintText: 'Sua Senha',
+          labelText: 'Confirme a senha',
+          border: OutlineInputBorder(),
+        ),
+      );
+
+  Widget buildNome() => TextFormField(
+        controller: nomeController,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'O campo nome é obrigatório';
+          }
+          if (value.length < 6) {
+            return 'O nome deve ter no mínimo 6 caracteres';
+          }
+          return null;
+        },
+        obscureText: true,
+        decoration: const InputDecoration(
+          hintText: 'Nome',
+          labelText: 'Seu nome',
+          border: OutlineInputBorder(),
+        ),
+      );
+}
